@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
-import { Header } from "./Header";
 import { supabase } from "./utils/supabaseClient";
-import { ProductCard } from "./ProductCard";
-import { SubHeader } from "./SubHeader";
-import { ProductCategory } from "./ProductCategory";
 import Uppy from "@uppy/core";
 import { DashboardModal } from "@uppy/react";
+import Tus from "@uppy/tus";
 
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
-import Tus from "@uppy/tus";
 
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const SUPABASE_PROJECT_ID = "ssgvoeghescpzolyfark";
@@ -18,7 +14,7 @@ const STORAGE_BUCKET = "ProductImages";
 const folder = "";
 const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
 
-function App() {
+export function Uppy() {
   const [uploadedURLs, setUploadedUrls] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
 
@@ -82,9 +78,6 @@ function App() {
 
   return (
     <>
-      <Header />
-      <SubHeader />
-      <ProductCategory />
       <div>
         {uploadedFiles.map((url) => (
           <div key={url}>{url}</div>
@@ -96,7 +89,6 @@ function App() {
           <div key={url}>{url}</div>
         ))}
       </div>
-
       <DashboardModal
         uppy={uppy}
         plugins={["Dashboard"]}
@@ -107,5 +99,3 @@ function App() {
     </>
   );
 }
-
-export default App;

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function Header() {
   return (
     <div className="flex gap-4 h-20 p-3 border items-center justify-between bg-[#EFF1F3]">
@@ -105,7 +107,9 @@ export function Header() {
           />
         </svg>
       </div>
-      <img src="./OLXsell.png" className="h-full" />
+      <Link to="/sell" className="h-full">
+        <img src="./OLXsell.png" className="h-full" />
+      </Link>
     </div>
   );
 }

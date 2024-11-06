@@ -78,17 +78,12 @@ export function UppyComponent() {
 
   return (
     <>
-      <div>
-        {uploadedFiles.map((url) => (
-          <div key={url}>{url}</div>
-        ))}
-      </div>
-      <button id="uppy-button">UPPY</button>
-      <div>
-        {uploadedURLs.map((url) => (
-          <div key={url}>{url}</div>
-        ))}
-      </div>
+      <button
+        id="uppy-button"
+        className="bg-primary text-white font-bold rounded-lg"
+      >
+        UPLOAD IMAGES
+      </button>
       <DashboardModal
         uppy={uppy}
         plugins={["Dashboard"]}

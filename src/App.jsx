@@ -9,7 +9,7 @@ function App() {
       <Header />
       <SubHeader />
       <ProductCategory />
-      <UppyComponent />
+      {/* <UppyComponent /> */}
     </>
   );
 }

@@ -14,7 +14,7 @@ const STORAGE_BUCKET = "ProductImages";
 const folder = "";
 const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
 
-export function Uppy() {
+export function UppyComponent() {
   const [uploadedURLs, setUploadedUrls] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
 

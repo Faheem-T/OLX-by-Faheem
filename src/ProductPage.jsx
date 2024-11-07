@@ -110,6 +110,8 @@ export function ProductPage() {
         <div className="text-primary">
           <div className="font-bold">Details</div>
           <div>{product.details}</div>
+          <div className="font-bold">Categories</div>
+          <div>{`${product.categories}`}</div>
         </div>
       </div>
       <Footer />

@@ -5,18 +5,33 @@ import { useContext } from "react";
 import { SearchTextContext } from "./contexts/SearchTextContext";
 
 export function ProductCategory() {
-  const { searchText } = useContext(SearchTextContext);
+  const { searchText, searchCategory } = useContext(SearchTextContext);
   // Regular expression for searchBar
-  const searchRegex = new RegExp(`.*${searchText}.*`, "gi");
+
+  const searchRegex = new RegExp(`.*${searchText.trim()}.*`, "gi");
+  let searchCategoryRegex = "";
+  if (searchCategory) {
+    searchCategoryRegex = new RegExp(`.*${searchCategory.trim()}.*`, "gi");
+  }
+  console.log(typeof searchCategory);
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 flex-wrap p-4 ml-auto">
       {Products.map((product) => {
         // ignoring product if not matching search
         if (
           !(
-            product.description.match(searchRegex) ||
-            product.details.match(searchRegex)
+            // comparing search text
+            (
+              product.description.match(searchRegex) ||
+              product.details.match(searchRegex)
+            )
           )
+        )
+          return;
+        // ignoring product if not matching category
+        if (
+          !product.categories.includes(searchCategory?.toLowerCase()) &&
+          searchCategory // making sure searchCategory is not null
         )
           return;
         return (

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { UppyComponent } from "./UppyComponent";
 import { useState, useEffect, useContext } from "react";
 import { ImagePreview } from "./ImagePreview";
@@ -6,6 +6,7 @@ import { UserContext } from "./contexts/userContext";
 import { supabase } from "./utils/supabaseClient";
 
 export function SellPage() {
+  const navigate = useNavigate();
   const [imgUrls, setImgUrls] = useState([]);
   const [loadedImages, setLoadedImages] = useState(0);
   const { user } = useContext(UserContext);
@@ -29,9 +30,6 @@ export function SellPage() {
     const location = form.location.value;
     const seller = { name: user.displayName, email: user.email };
     const img = imgUrls;
-    //const formData = { description, categories, details, price, location, imgUrls };
-    //console.log(formData);
-
     const { data, error } = await supabase
       .from("OLX Product")
       .insert([
@@ -40,11 +38,7 @@ export function SellPage() {
       .select();
     console.log(data);
     console.error(error);
-
-    // const { categories } = new FormData(e.target);
-    // console.log(categories);
-    //  const formData = new FormData(e.target);
-    //for (let item of formData) console.log(item);
+    navigate("/");
   };
 
   return (
@@ -79,6 +73,7 @@ export function SellPage() {
               name="description"
               placeholder="Product description"
               className="border rounded p-2"
+              required
             />
           </div>
           <div className="w-full flex flex-col">
@@ -87,6 +82,7 @@ export function SellPage() {
               name="categories"
               placeholder="Enter categories separated by spaces"
               className="border rounded p-2"
+              required
             />
           </div>
           <div className="w-full flex flex-col">
@@ -106,6 +102,7 @@ export function SellPage() {
                 name="price"
                 placeholder="Price"
                 type="number"
+                required
               />
             </div>
           </div>
@@ -115,6 +112,7 @@ export function SellPage() {
               name="location"
               placeholder="Enter your location information"
               className="border rounded p-2"
+              required
             />
           </div>
           <div className="w-full flex flex-col">

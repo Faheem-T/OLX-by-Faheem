@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SellPage } from "./SellPage.jsx";
 import { UserContextProvider } from "./contexts/userContext.jsx";
+import { ProductPage } from "./ProductPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: "/sell",
     element: <SellPage />,
+  },
+  {
+    path: "/product/:id",
+    element: <ProductPage />,
   },
 ]);
 

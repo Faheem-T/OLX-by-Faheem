@@ -2,7 +2,7 @@ export function ProductCard({ product }) {
   const dateObj = new Date(product.createdAt);
   const date = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()}`;
   return (
-    <div className="flex flex-col w-[20%] h-60 content-center p-4 border">
+    <>
       <div className="w-full h-2/3 overflow-hidden">
         <img src={product.img[0]} className="max-w-full" />
       </div>
@@ -12,7 +12,7 @@ export function ProductCard({ product }) {
         <div>{product.location}</div>
         <div className="ms-auto">{date}</div>
       </div>
-    </div>
+    </>
   );
 }
 

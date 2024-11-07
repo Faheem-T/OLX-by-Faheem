@@ -101,9 +101,6 @@ export function UppyComponent({ setImgUrls }) {
         id="uppy-button"
         className="bg-primary text-white font-bold rounded-lg px-4 py-2"
         type="button"
-        onClick={(e) => {
-          e.preventDefault;
-        }}
       >
         UPLOAD IMAGES
       </button>

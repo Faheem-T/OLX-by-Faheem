@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 export function Header() {
   return (
     <div className="flex gap-4 h-20 p-3 border items-center justify-between bg-[#EFF1F3]">
-      <img src="OLX-Symbol.png" className="h-1/2 w-auto" />
+      <Link to="/" className="flex items-center h-1/2 w-auto">
+        <img src="/OLX-Symbol.png" className="h-full w-full" />
+      </Link>
       <div className="flex items-center p-4 h-20 ">
         <div className="border-2 border-stone-900 flex items-center bg-white">
           <svg // magnifying glass icon
@@ -108,7 +110,7 @@ export function Header() {
         </svg>
       </div>
       <Link to="/sell" className="h-full">
-        <img src="./OLXsell.png" className="h-full" />
+        <img src="/OLXsell.png" className="h-full" />
       </Link>
     </div>
   );

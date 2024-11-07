@@ -1,7 +1,7 @@
 export function Footer() {
   return (
-    <div className="mt-92">
-      <img src="/Footer.png" className="h-full" />
+    <div className="h-[800px] flex items-end">
+      <img src="/Footer.png" className="w-full object-contain" />
     </div>
   );
 }

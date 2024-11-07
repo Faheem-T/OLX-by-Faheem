@@ -1,10 +1,14 @@
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SearchTextContext } from "./contexts/SearchTextContext";
+import { UserContext } from "./contexts/userContext";
+import { logOut, signIn } from "../auth/auth_google_provider_create";
 
 export function Header() {
   const navigate = useNavigate();
   const { searchText, setSearchText } = useContext(SearchTextContext);
+  const { user } = useContext(UserContext);
+  console.log(user);
   return (
     <div className="flex gap-4 h-20 p-3 border items-center justify-between bg-[#EFF1F3]">
       <Link to="/" className="flex items-center h-1/2 w-auto">
@@ -127,9 +131,30 @@ export function Header() {
           />
         </svg>
       </div>
-      <Link to="/sell" className="h-full">
-        <img src="/OLXsell.png" className="h-full" />
-      </Link>
+      <div>
+        {user ? (
+          <>
+            <button onClick={logOut}>Log Out</button>
+          </>
+        ) : (
+          <button onClick={signIn}>Sign In</button>
+        )}
+      </div>
+      {user && (
+        <>
+          <Link to="/sell" className="h-full">
+            <img src="/OLXsell.png" className="h-full" />
+          </Link>
+        </>
+      )}
+
+      {
+        //<img
+        //src={user?.photoURL || "/userIcon.jpg"}
+        //className="h-18 w-auto"
+        //alt="user pfp"
+        ///>
+      }
     </div>
   );
 }

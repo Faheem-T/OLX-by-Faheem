@@ -5,7 +5,7 @@ import {
   signOut,
 } from "firebase/auth";
 
-import "./firebaseConfig";
+import "./firebaseConfig.js";
 
 export async function signIn() {
   const provider = new GoogleAuthProvider();

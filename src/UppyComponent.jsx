@@ -3,6 +3,7 @@ import { supabase } from "./utils/supabaseClient";
 import Uppy from "@uppy/core";
 import { DashboardModal } from "@uppy/react";
 import Tus from "@uppy/tus";
+import { v4 as uuidv4 } from "uuid";
 
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
@@ -14,43 +15,60 @@ const STORAGE_BUCKET = "ProductImages";
 const folder = "";
 const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.supabase.co/storage/v1/upload/resumable`;
 
-export function UppyComponent() {
-  const [uploadedURLs, setUploadedUrls] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-
+export function UppyComponent({ setImgUrls }) {
   const [uppy] = useState(() =>
     new Uppy({ restrictions: { allowedFileTypes: ["image/*"] } })
       .on("file-added", (file) => {
+        // Generate a UUID for the filename with the original extension
+        const fileExt = file.name.split(".").pop();
+        const newFileName = `${uuidv4()}.${fileExt}`;
+        file.name = newFileName;
+
+        const filePath = folder ? `${folder}/${newFileName}` : newFileName;
+
         const supabaseMetadata = {
           bucketName: STORAGE_BUCKET,
-          objectName: folder ? `${folder}/${file.name}` : file.name,
+          objectName: filePath,
           contentType: file.type,
         };
 
         file.meta = {
           ...file.meta,
           ...supabaseMetadata,
+          filePath,
         };
 
-        console.log("file added", file);
+        console.log("File prepared for upload:", {
+          name: file.name,
+          path: filePath,
+          type: file.type,
+        });
       })
-      .on("upload-success", (file, response) => {
-        console.log("Upload successful:", file.name);
-        console.log("Response:", response);
-        setUploadedFiles((prev) => [...prev, file.name]);
-        setUploadedUrls((prev) => [
-          ...prev,
-          // getting public URL from supabase storage
-          supabase.storage.from("ProductImages").getPublicUrl(`${file.name}`)
-            .data.publicUrl,
-        ]);
+      .on("upload-success", async (file, response) => {
+        try {
+          // Generate the public URL directly after successful upload
+          const { data } = supabase.storage
+            .from(STORAGE_BUCKET)
+            .getPublicUrl(file.meta.filePath || file.name);
+
+          if (data?.publicUrl) {
+            console.log("Generated public URL:", data.publicUrl);
+            setImgUrls((prev) => [...prev, data.publicUrl]);
+          } else {
+            console.error("Failed to generate public URL for:", file.name);
+          }
+        } catch (error) {
+          console.error("Error generating public URL:", error);
+        }
       })
       .on("complete", (result) => {
-        uppy.getPlugin("dashboard").closeModal();
-        console.log(
-          "Upload complete! We’ve uploaded these files:",
-          result.successful
-        );
+        if (uppy.getPlugin("dashboard")) {
+          uppy.getPlugin("dashboard").closeModal();
+        }
+        console.log("Upload complete! Files uploaded:", result.successful);
+      })
+      .on("error", (error) => {
+        console.error("Uppy error:", error);
       })
       .use(Tus, {
         endpoint: supabaseStorageURL,
@@ -65,9 +83,10 @@ export function UppyComponent() {
           "objectName",
           "contentType",
           "cacheControl",
+          "filePath",
         ],
         onError: function (error) {
-          console.log("Failed because: " + error);
+          console.error("Tus upload failed:", error);
         },
       })
   );
@@ -80,7 +99,11 @@ export function UppyComponent() {
     <>
       <button
         id="uppy-button"
-        className="bg-primary text-white font-bold rounded-lg"
+        className="bg-primary text-white font-bold rounded-lg px-4 py-2"
+        type="button"
+        onClick={(e) => {
+          e.preventDefault;
+        }}
       >
         UPLOAD IMAGES
       </button>

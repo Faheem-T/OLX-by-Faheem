@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SellPage } from "./SellPage.jsx";
-import { UserContextProvider } from "./contexts/userContext.js";
+import { UserContextProvider } from "./contexts/userContext.jsx";
 
 const router = createBrowserRouter([
   {

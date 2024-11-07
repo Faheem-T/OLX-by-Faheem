@@ -1,6 +1,10 @@
-import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { SearchTextContext } from "./contexts/SearchTextContext";
 
 export function Header() {
+  const navigate = useNavigate();
+  const { searchText, setSearchText } = useContext(SearchTextContext);
   return (
     <div className="flex gap-4 h-20 p-3 border items-center justify-between bg-[#EFF1F3]">
       <Link to="/" className="flex items-center h-1/2 w-auto">
@@ -42,26 +46,40 @@ export function Header() {
           </svg>
         </div>
       </div>
-      <div className="flex items-center p-4 h-20 w-1/3 border justify-center">
-        <input
+
+      <form className="flex items-center p-4 h-20 w-1/3 border justify-center">
+        <input // search bar
           className="border-2 p-3 h-full border-stone-900 w-[80%]"
           placeholder="Find Cars, Mobile Phones and more..."
-        ></input>
-        <svg // magnifying glass icon
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={3}
-          stroke="white"
-          className="size-6 h-full w-max p-3 bg-[#002F35]"
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+        />
+        <button
+          type="submit"
+          className="h-full w-max"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/");
+          }}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-          />
-        </svg>
-      </div>
+          <svg // magnifying glass icon
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={3}
+            stroke="white"
+            className="size-6 h-full w-max p-3 bg-[#002F35]"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            />
+          </svg>
+        </button>
+      </form>
       <div className="flex gap-2">
         <div>English</div>
         <svg // chevron down icon

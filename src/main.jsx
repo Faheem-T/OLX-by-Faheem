@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SellPage } from "./SellPage.jsx";
 import { UserContextProvider } from "./contexts/userContext.jsx";
 import { ProductPage } from "./ProductPage.jsx";
+import { SearchTextContextProvider } from "./contexts/SearchTextContext.jsx";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <UserContextProvider>
-      <RouterProvider router={router} />
+      <SearchTextContextProvider>
+        <RouterProvider router={router} />
+      </SearchTextContextProvider>
     </UserContextProvider>
   </StrictMode>
 );

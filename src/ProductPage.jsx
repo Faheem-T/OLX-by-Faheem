@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { Header } from "./Header";
 import { SubHeader } from "./SubHeader";
 import { useRef, useState } from "react";
+import { Footer } from "./Footer";
 
 export function ProductPage() {
   const {
@@ -27,7 +28,7 @@ export function ProductPage() {
       <div className="p-4">
         <div className="h-full w-full flex p-2 text-primary">
           {/*Images Section*/}
-          <div className="w-1/2">
+          <div className="w-1/2 flex flex-col items-center">
             <div className="relative w-2/3 flex items-center justify-center">
               <button
                 onClick={handlePrevClick}
@@ -73,14 +74,14 @@ export function ProductPage() {
               </button>
             </div>
             {/*Thumbnails*/}
-            <div className="h-full w-full flex p-2">
+            <div className="h-full w-full flex justify-center p-2 gap-4">
               {product.img.map((url, i) => (
                 <img
                   src={url}
                   key={i}
                   className={
                     "h-20 " +
-                    (i === currentImgIndex ? `border border-blue-800` : ``)
+                    (i === currentImgIndex ? `border-4 border-blue-800` : ``)
                   }
                   onClick={() => {
                     setCurrentImgIndex(i);
@@ -89,7 +90,7 @@ export function ProductPage() {
               ))}
             </div>
           </div>
-          <div className="border">
+          <div className="border p-4 h-auto">
             {/*Price + desc section */}
             <div className="font-bold text-2xl">₹ {product.price}</div>
             <div>{product.description}</div>
@@ -111,6 +112,7 @@ export function ProductPage() {
           <div>{product.details}</div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

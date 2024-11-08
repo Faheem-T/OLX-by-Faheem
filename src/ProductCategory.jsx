@@ -9,11 +9,6 @@ export function ProductCategory() {
   // Regular expression for searchBar
 
   const searchRegex = new RegExp(`.*${searchText.trim()}.*`, "gi");
-  let searchCategoryRegex = "";
-  if (searchCategory) {
-    searchCategoryRegex = new RegExp(`.*${searchCategory.trim()}.*`, "gi");
-  }
-  console.log(typeof searchCategory);
   return (
     <div className="flex gap-4 flex-wrap p-4 ml-auto">
       {Products.map((product) => {

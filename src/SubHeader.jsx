@@ -32,7 +32,7 @@ export function SubHeader() {
         <button
           key={link}
           className={
-            "hover:text-primary p-2 rounded-xl " +
+            "hover:text-primary p-2 rounded-xl border-2 border-transparent" +
             (searchCategory.toLowerCase() === link.toLowerCase()
               ? `text-primary border-2`
               : ``)
@@ -46,6 +46,12 @@ export function SubHeader() {
           {link}
         </button>
       ))}
+      <input
+        onChange={(e) => setSearchCategory(e.target.value)}
+        placeholder="Filter by Category"
+        value={searchCategory}
+        className="p-2"
+      />
       <button
         onClick={() => {
           setSearchCategory("");

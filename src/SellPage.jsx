@@ -4,12 +4,30 @@ import { useState, useEffect, useContext } from "react";
 import { ImagePreview } from "./ImagePreview";
 import { UserContext } from "./contexts/userContext";
 import { supabase } from "./utils/supabaseClient";
+import { useForm } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
+import { validate } from "uuid";
 
 export function SellPage() {
   const navigate = useNavigate();
   const [imgUrls, setImgUrls] = useState([]);
   const [loadedImages, setLoadedImages] = useState(0);
   const { user } = useContext(UserContext);
+
+  const form = useForm();
+  const { register, control, handleSubmit, formState, reset, setValue } = form;
+  const { errors, isSubmitSuccessful } = formState;
+
+  // Changing images field value when imgUrls array changes
+  useEffect(() => {
+    setValue("img", [...imgUrls]);
+  }, [imgUrls]);
+
+  // resetting form on successful submit
+  useEffect(() => {
+    if (isSubmitSuccessful) reset();
+  }, [isSubmitSuccessful, reset]);
+
   // Track loading progress
   const handleImageLoad = () => {
     setLoadedImages((prev) => prev + 1);
@@ -40,7 +58,17 @@ export function SellPage() {
     console.error(error);
     navigate("/");
   };
-
+  const onSubmit = async (data) => {
+    console.log("form submitted", data);
+    const seller = { name: user.displayName, email: user.email };
+    const { response, error } = await supabase
+      .from("OLX Product")
+      .insert([{ ...data, seller, categories: data.categories.split(" ") }]) // overwriting categories since it has to be split first
+      .select();
+    console.log(response);
+    console.error(error);
+    navigate("/");
+  };
   return (
     <>
       <div className="h-16 bg-gray-100 flex items-center p-4">
@@ -65,56 +93,101 @@ export function SellPage() {
         <div className="font-bold text-2xl">POST YOUR AD</div>
         <form
           className="border p-4 w-4/6 flex flex-col gap-4"
-          onSubmit={handleFormSubmit}
+          // onSubmit={handleFormSubmit}
+          onSubmit={handleSubmit(onSubmit)}
+          noValidate
         >
           <div className="w-full flex flex-col">
-            <label htmlFor="categories">DESCRIPTION</label>
+            <label htmlFor="categories">PRODUCT DESCRIPTION</label>
             <input
-              name="description"
               placeholder="Product description"
               className="border rounded p-2"
-              required
+              {...register("description", {
+                required: {
+                  value: true,
+                  message: "Description is required",
+                },
+                validate: {
+                  notAlphanumeric: (fieldValues) =>
+                    /^(?![\s#!@]+$)[a-zA-Z0-9\s'"()]+$/i.test(fieldValues) ||
+                    "Only enter alphanumeric characters",
+                },
+              })}
             />
+            <div className="text-red-600 text-sm">
+              {errors.description?.message}
+            </div>
           </div>
+
           <div className="w-full flex flex-col">
             <label htmlFor="categories">CATEGORIES</label>
             <input
-              name="categories"
               placeholder="Enter categories separated by spaces"
               className="border rounded p-2"
-              required
+              {...register("categories", {
+                required: {
+                  value: true,
+                  message: "Categories is required",
+                },
+              })}
             />
+            <div className="text-red-600 text-sm">
+              {errors.categories?.message}
+            </div>
           </div>
+
           <div className="w-full flex flex-col">
             <label htmlFor="details">INCLUDE SOME DETAILS</label>
             <textarea
-              name="details"
               placeholder="Details..."
               className="border rounded p-2"
+              {...register("details")}
             />
+            <div className="text-red-600 text-sm">
+              {errors.details?.message}
+            </div>
           </div>
+
           <div className="w-full flex flex-col">
             <label htmlFor="price">SET A PRICE</label>
             <div className="flex items-center">
               <span className="mr-2">₹</span>
               <input
                 className="w-1/3 border rounded p-2"
-                name="price"
                 placeholder="Price"
                 type="number"
                 required
+                {...register("price", {
+                  required: {
+                    value: true,
+                    message: "Price is required",
+                  },
+                  validate: (fieldValues) =>
+                    /[0-9]/.test(fieldValues) || "Invalid price",
+                })}
               />
             </div>
+            <div className="text-red-600 text-sm">{errors.price?.message}</div>
           </div>
+
           <div className="w-full flex flex-col">
             <label htmlFor="location">LOCATION</label>
             <textarea
-              name="location"
               placeholder="Enter your location information"
               className="border rounded p-2"
               required
+              {...register("location", {
+                required: {
+                  value: true,
+                  message: "Location information is required",
+                },
+              })}
             />
+            <div className="text-red-600 text-sm">
+              {errors.location?.message}
+            </div>
           </div>
+
           <div className="w-full flex flex-col">
             <div className="flex justify-between items-center">
               <div>UPLOAD PHOTOS</div>
@@ -135,13 +208,23 @@ export function SellPage() {
               ))}
             </div>
             <UppyComponent setImgUrls={setImgUrls} />
+            <input
+              type="hidden"
+              {...register("img", {
+                validate: (fieldValues) =>
+                  fieldValues.length || "Upload atleast 1 image",
+              })}
+            />
+            <div className="text-red-600 text-sm">{errors.img?.message}</div>
           </div>
+
           <button
             type="submit"
             className="bg-primary text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity"
           >
             POST AD
           </button>
+          <DevTool control={control} />
         </form>
       </div>
     </>

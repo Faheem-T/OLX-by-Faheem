@@ -1,4 +1,4 @@
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UppyComponent } from "./UppyComponent";
 import { useState, useEffect, useContext } from "react";
 import { ImagePreview } from "./ImagePreview";
@@ -6,14 +6,15 @@ import { UserContext } from "./contexts/userContext";
 import { supabase } from "./utils/supabaseClient";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import { validate } from "uuid";
 
 export function SellPage() {
-  const navigate = useNavigate();
   const [imgUrls, setImgUrls] = useState([]);
   const [loadedImages, setLoadedImages] = useState(0);
   const { user } = useContext(UserContext);
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) navigate("/");
+  }, [user]);
   const form = useForm();
   const { register, control, handleSubmit, formState, reset, setValue } = form;
   const { errors, isSubmitSuccessful } = formState;
@@ -38,26 +39,6 @@ export function SellPage() {
     return url + "?width=160&height=160&resize=contain";
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    const { target: form } = e;
-    const description = form.description.value;
-    const categories = form.categories.value.split(" ");
-    const details = form.details.value;
-    const price = form.price.value;
-    const location = form.location.value;
-    const seller = { name: user.displayName, email: user.email };
-    const img = imgUrls;
-    const { data, error } = await supabase
-      .from("OLX Product")
-      .insert([
-        { categories, price, description, details, img, location, seller },
-      ])
-      .select();
-    console.log(data);
-    console.error(error);
-    navigate("/");
-  };
   const onSubmit = async (data) => {
     console.log("form submitted", data);
     const seller = { name: user.displayName, email: user.email };
